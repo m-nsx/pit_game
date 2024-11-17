@@ -1,40 +1,73 @@
 #!/bin/bash
 
+# Couleurs pour l'affichage
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+RED='\033[1;41;37m'
+
+# Fonction pour afficher le message de victoire
+display_victory() {
+    echo -e "${GREEN}"
+    cat << "EOF"
+
+    ██╗   ██╗██╗ ██████╗████████╗ ██████╗ ██╗██████╗ ███████╗
+    ██║   ██║██║██╔════╝╚══██╔══╝██╔═══██╗██║██╔══██╗██╔════╝
+    ██║   ██║██║██║        ██║   ██║   ██║██║██████╔╝█████╗  
+    ╚██╗ ██╔╝██║██║        ██║   ██║   ██║██║██╔══██╗██╔══╝  
+     ╚████╔╝ ██║╚██████╗   ██║   ╚██████╔╝██║██║  ██║███████╗
+      ╚═══╝  ╚═╝ ╚═════╝   ╚═╝    ╚═════╝ ╚═╝╚═╝  ╚═╝╚══════╝  
+
+EOF
+    echo -e "${NC}"
+}
+
+# Capturer le temps de début du jeu
 # Vérifier si le dossier 'main' existe
-if [ $errors -lt $max_errors ]; then
-    if [ ! -d "main" ]; then
-        echo "Le dossier 'main' n'existe pas."
-        exit 0
-    fi
+if [ ! -d "main" ]; then
+    echo -e "\033[1;41;37mERREUR\033[0;31m La vérification a échoué, réessayez.\033[0m"
+    exit 0
 fi
 
 # Vérifier si le fichier 'defuse' existe dans 'main'
-if [ $errors -lt $max_errors ]; then
-    if [ ! -f "main/defuse" ]; then
-        echo "Le fichier 'defuse' n'existe pas dans le dossier 'main'."
-        exit 0
-    fi
+if [ ! -f "main/defuse" ]; then
+    echo -e "\033[1;41;37mERREUR\033[0;31m La vérification a échoué, réessayez.\033[0m"
+    exit 0
 fi
 
 # Vérifier le contenu du fichier
-if [ $errors -lt $max_errors ]; then
-    if [ -f "main/defuse" ]; then
-        line_count=$(wc -l < "main/defuse")
-        file_content=$(cat "main/defuse")
+if [ -f "main/defuse" ]; then
+    line_count=$(wc -l < "main/defuse" | tr -d '[:space:]')
+    file_content=$(cat "main/defuse" | sed 's/[[:space:]]*$//')
 
-        if [ "$line_count" -ne 1 ]; then
-            echo "Le fichier 'defuse' doit contenir une seule ligne."
-        elif [ "$file_content" != "I... am Steve" ]; then
-            echo "Le contenu du fichier 'defuse' est incorrect."
-        else
-            echo "BRAVO !"
-            echo "Vous avez résolu le mini jeu !"
-            exit 0
-        fi
+    if [ "$line_count" -ne 1 ]; then
+        echo -e "\033[1;41;37mERREUR\033[0;31m La vérification a échoué, réessayez.\033[0m"
+    elif [ "$file_content" != "I... am Steve" ]; then
+        echo -e "\033[1;41;37mERREUR\033[0;31m La vérification a échoué, réessayez.\033[0m"
+    else
+        # Calculer le temps écoulé en secondes
+        end_time=$(date +%s)
+        start_time=$(cat .temp | tr -d '[:space:]')
+        elapsed_time=$((end_time - start_time))
+
+        # Convertir le temps en format heures:minutes:secondes
+        minutes=$(( (elapsed_time % 3600) / 60 ))
+        seconds=$((elapsed_time % 60))
+
+        # Affichage du temps écoulé
+        display_victory
+        echo -e "${GREEN}BRAVO !${NC}"
+        echo -e "${GREEN}Vous avez résolu le mini-jeu en ${minutes}m ${seconds}s !${NC}"
+        echo -e "\033[1;30m----------\033[0m"
+        echo -e "\033[1;30mPour remettre à zéro le jeu, il vous suffit d'exécuter ./reset.sh\033[0m"
+        pkill timer.sh  # Arrête le timer
+        exit 0
     fi
 fi
 
 exit 0
+
+
+
 
 
 

@@ -2,7 +2,7 @@
 
 # Termine tous les processus du jeu
 pkill -f "timer.sh"
-echo "Tous les processus ont été arrêtés !"
+echo -e "\033[1;30mTous les processus ont été arrêtés !\033[0m"
 
 # Supprimer les fichiers et les dossiers du jeu
 root_dir="."
@@ -19,10 +19,11 @@ rm -f key_file.enc
 rm -f key_file
 rm -f archive.tar.gz
 rm -f defuse
-echo "Tous les fichiers et dossiers ont été nettoyés !"
+rm -f .temp
+echo -e "\033[1;30mTous les fichiers et dossiers ont été nettoyés !\033[0m"
 
 # Reset terminé
-echo "Remise à zéro terminée !"
+echo -e "\033[1;42;37mSUCCÈS\033[0m \033[1;32mRemise à zéro terminée !\033[0m"
 
 exit 0
 

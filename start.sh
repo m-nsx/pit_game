@@ -1,5 +1,26 @@
 #!/bin/bash
 
+display_intro() {
+    # Couleur par défaut
+    RESET='\033[1;33m'
+    NC='\033[0m' # No Color
+
+    echo -e "${RESET}"
+    cat << "EOF"
+
+    █████  █████ ██████   █████ █████ █████ █████      █████████    █████████   ██████   ██████ ██████████
+    ░░███  ░░███ ░░██████ ░░███ ░░███ ░░███ ░░███      ███░░░░░███  ███░░░░░███ ░░██████ ██████ ░░███░░░░░█
+    ░███   ░███  ░███░███ ░███  ░███  ░░███ ███      ███     ░░░  ░███    ░███  ░███░█████░███  ░███  █ ░ 
+    ░███   ░███  ░███░░███░███  ░███   ░░█████      ░███          ░███████████  ░███░░███ ░███  ░██████   
+    ░███   ░███  ░███ ░░██████  ░███    ███░███     ░███    █████ ░███░░░░░███  ░███ ░░░  ░███  ░███░░█   
+    ░███   ░███  ░███  ░░█████  ░███   ███ ░░███    ░░███  ░░███  ░███    ░███  ░███      ░███  ░███ ░   █
+    ░░████████   █████  ░░█████ █████ █████ █████    ░░█████████  █████   █████ █████     █████ ██████████
+    ░░░░░░░░   ░░░░░    ░░░░░ ░░░░░ ░░░░░ ░░░░░      ░░░░░░░░░  ░░░░░   ░░░░░ ░░░░░     ░░░░░ ░░░░░░░░░░ 
+
+EOF
+    echo -e "${NC}"
+}
+
 duration=900
 
 # Réinitialise les permissions de tous les contenus
@@ -9,11 +30,10 @@ chmod 744 gameinit.sh
 chmod 744 vault.sh
 chmod 744 decipher.sh
 chmod 744 verification.sh
-chmod 744 virus.sh
 
 # Vérifier si .time existe déjà avant de commencer
 if [ -f "time" ]; then
-    echo "ERREUR : Le jeu est déjà en cours !"
+    echo -e "\033[1;41;37mERREUR\033[0;31m Le jeu est déjà en cours !"
     exit 1
 fi
 
@@ -65,9 +85,9 @@ encrypt() {
 }
 encrypt "$key_file" "$encrypted_file" "$shift_key"
 if [ $? -eq 0 ]; then
-    echo "Le fichier a été chiffré avec succès !"
+    echo -e "\033[1;42;37mSUCCÈS\033[0m \033[1;32mLe fichier a été chiffré avec succès !\033[0m"
 else
-    echo "ERREUR : Le chiffrement du fichier a échoué !"
+    echo -e "\033[1;41;37mERREUR\033[0;31m Le chiffrement du fichier a échoué !"
     exit 1
 fi
 
@@ -77,22 +97,30 @@ chmod 000 archive.tar.gz
 rm -f key_file
 rm -f key_file.enc
 
+touch .temp
+(date +%s) > .temp
+
+echo ""
+
+display_intro
+
 # Lancer le script de compte à rebours en arrière-plan
 if [ -f timer.sh ]; then
     ./timer.sh $duration &
     m=$(($duration / 60))
     s=$(($duration % 60))
     echo ""
-    echo "Le compte a rebours a été lancé ! Vous avez $m:$s pour terminer le jeu avant que la bombe n'explose !"
-    echo "Vous pouvez à tout moment consulter le temps restant en effectuant "cat time" à la racine."
-    echo "Ou remettre le jeu à zéro en executant le script reset.sh avec ./reset.sh."
+    echo -e "\033[1;33mLe compte a rebours a été lancé ! Vous avez $m:$s pour terminer le jeu avant que \033[9;30mla bombe n'explose\033[0m \033[1;33mrm -rf !"
+    echo -e "Vous pouvez à tout moment consulter le temps restant en effectuant 'cat time' à la racine."
+    echo -e "Ou remettre le jeu à zéro en exécutant le script reset.sh avec './reset.sh'."
     echo ""
-    echo "On ne voit bien qu'avec ls. L'essentiel est invisible sans paramètre."
-    echo "Antoine de Saint-Exupéry"
+    echo -e "On ne voit bien qu'avec ls. L'essentiel est invisible sans paramètre."
+    echo -e "\033[3;30mAntoine de Saint-Exupéry\033[0m"
     echo ""
-    echo "Bonne chance !"
+    echo -e "\033[1;33mBonne chance !\033[0m"
+    echo ""
 else
-    echo "ERREUR : Le script timer.sh n'existe pas !"
+    echo -e "\033[1;41;37mERREUR\033[0;31m Le script timer.sh n'existe pas !"
 fi
 
 exit 0

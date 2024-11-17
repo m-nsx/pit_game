@@ -1,10 +1,22 @@
 #!/bin/bash
 
 shift_key=-3
+
 encrypted_file="key_file.enc"
 if [ ! -f "$encrypted_file" ]; then
-    echo "ERREUR : Le fichier à déchiffrer ($encrypted_file) n'existe pas."
-    echo "Vous devez d'abord extraire l'archive !"
+    echo -e "\033[1;41;37mERREUR\033[0;31m Le fichier à déchiffrer $encrypted_file n'existe pas.\033[0m"
+    if [ -f "key_file" ]; then
+        echo -e "\033[1;30mVous avez déjà déchiffré le fichier !\033[0m"
+    else
+        echo -e "\033[1;30mVous devez d'abord extraire l'archive !\033[0m"
+    fi
+    exit 1
+fi
+
+code_file="code"
+if [ ! -f "$code_file" ]; then
+    echo -e "\033[1;41;37mERREUR\033[0;31m Le fichier contenant le code n'existe pas.\033[0m"
+    echo -e "\033[1;30mVous devez d'abord exécuter le script vault.sh !\033[0m"
     exit 1
 fi
 
@@ -35,18 +47,18 @@ if [ "$USER_INPUT" == "$CODE" ]; then
             printf "\\$(printf '%03o' "$new_ascii")" >> "$output_file"
         done < "$input_file"
     }
-    echo "Déchiffrement du fichier en cours..."
+    echo -e "\033[1;30mDéchiffrement du fichier en cours...\033[0m"
     decrypt "$encrypted_file" "$decrypted_file" "$shift_key"
     # Vérifier si le déchiffrement a réussi
     if [ $? -eq 0 ]; then
     rm -f key_file.enc
-        echo "Le fichier a été déchiffré avec succès et stocké sous '$decrypted_file'."
+        echo -e "\033[1;42;37mSUCCÈS\033[0m \033[1;32mLe fichier a été déchiffré avec succès et stocké sous '$decrypted_file'.\033[0m"
     else
-        echo "ERREUR : Le déchiffrement du fichier a échoué !"
+        echo -e "\033[1;41;37mERREUR\033[0;31m Le déchiffrement du fichier a échoué !"
         exit 1
     fi
 else
-    echo "Mot de passe incorrect !"
+    echo -e "\033[1;41;37mERREUR\033[0;31m Mot de passe incorrect !"
 fi
 
 exit 0

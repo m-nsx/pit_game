@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Ce fichier est protégé ! Trouvez le mot de passe."
+echo -e "\033[1;33mCe fichier est protégé ! Trouvez le mot de passe.\033[0m"
 
 # Mot de passe attendu
 PASSWORD="creeper?awman"
@@ -13,13 +13,13 @@ echo
 if [ "$USER_INPUT" == "$PASSWORD" ]; then
     touch code
     chmod 744 code
-    echo "Mot de passe correct ! Création du code"
+    echo -e "\033[1;42;37mSUCCÈS\033[0m \033[1;32mMot de passe correct ! Création du code\033[0m"
     TEMP=$(printf "%06d" $((RANDOM % 1000000)))
     echo "$TEMP" > code
-    echo "Le code a été enregistré dans le fichier 'code'"
-    echo "Ce code vous permettra de déchiffrer le fichier key_file.enc contenu dans l'archive !"
+    echo -e "\033[1;30mLe code a été enregistré dans le fichier 'code'\033[0m"
+    echo -e "\033[1;30mCe code vous permettra de déchiffrer le fichier key_file.enc contenu dans l'archive !\033[0m"
 else
-    echo "Mot de passe incorrect !"
+    echo -e "\033[1;41;37mERREUR\033[0;31m Mot de passe incorrect !"
 fi
 
 exit 0

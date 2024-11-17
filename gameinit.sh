@@ -32,7 +32,7 @@ for dir_index in $(seq 1 $NUM_DIRS); do
     # Créer un dossier
     DIR_PATH="$BASE_DIR/dossier_$dir_index"
     mkdir -p "$DIR_PATH" > /dev/null 2>&1
-    echo "Création du dossier : $DIR_PATH"
+    echo -e "\033[1;30mCréation du dossier : $DIR_PATH\033[0m"
 
     for file_index in $(seq 1 $NUM_FILES); do
         file_counter=$((file_counter + 1))
@@ -40,16 +40,16 @@ for dir_index in $(seq 1 $NUM_DIRS); do
 
         if [ $file_counter -eq $SECRET_FILE_INDEX ]; then
             echo "$SECRET_TEXT" > "$FILE_PATH"
-            generate_random_content | head -c $((FILE_SIZE - ${#SECRET_TEXT})) >> "$FILE_PATH"
         else
             generate_random_content > "$FILE_PATH"
         fi
     done
 done
 
-echo "Tous les dossiers ont été créés avec succès !"
+echo -e "\033[1;42;37mSUCCÈS\033[0m \033[1;32mTous les dossiers ont été créés avec succès !\033[0m"
 
 exit 0
+
 
 
 
